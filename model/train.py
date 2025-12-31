@@ -12,30 +12,57 @@ import pickle
 #Load the dataset
 data = pd.read_csv("../data/finalDataset0.2.csv")
 
-#keep only required columns
-data = data[["teaching.1", "teaching"]]
+#Define Text columns
+TEXT_COLUMNS = [
+    "teaching.1",
+    "coursecontent.1",
+    "labwork.1",
+    "Examination",
+    "extracurricular.1"
+]
+
+#keep only columns that actually exist
+TEXT_COLUMNS = [col for col in TEXT_COLUMNS if col in data.columns]
+
+#Combine Text Columns
+data["combined_text"] = (
+    data[TEXT_COLUMNS]
+    .astype(str)
+    .agg(" ".join, axis=1)
+)
+
+#Drop rows with empty combined text
+data = data[data["combined_text"].str.strip() != ""]
+
+#Target labels
+TARGET_COLUMN = "teaching"
 
 #Drop missing values
-data = data.dropna()
+data = data.dropna(subset=[TARGET_COLUMN])
 
 #labelEncoding
 label_encoder = LabelEncoder()
-data["sentiment_encoded"] = label_encoder.fit_transform(data["teaching"])
+data["sentiment_encoded"] = label_encoder.fit_transform(data[TARGET_COLUMN])
 
 
-X_text = data["teaching.1"]
+X_text = data["combined_text"]
 y = data["sentiment_encoded"]
+
+print("Class distribution:")
+print(pd.Series(y).value_counts())
 
 #Text Vectorization(TF- IDF)
 vectorizer = TfidfVectorizer(
     lowercase=True,
     stop_words="english",
-    max_features=5000,
+    max_features=8000,
     ngram_range=(1, 2),
     min_df=2
 )
 
 X = vectorizer.fit_transform(X_text)
+
+print("TF-IDF shape:", X.shape)
 
 #train-test split
 X_train, X_test, y_train, y_test = train_test_split(
