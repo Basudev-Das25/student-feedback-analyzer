@@ -31,10 +31,21 @@ def home():
     result_text = "Enter feedback text and click Analyze"
 
     if request.method == "POST":
-        text = request.form.get("feedback", "").strip()
+        teaching_text = request.form.get("teaching", "")
+        course_text = request.form.get("coursecontent", "")
+        lab_text = request.form.get("labwork", "")
+        extra_text = request.form.get("extracurricular", "")
 
-        if text:
-            X = vectorizer.transform([text])
+        # Combine text exactly like training
+        combined_text = " ".join([
+             teaching_text,
+             course_text,
+             lab_text,
+             extra_text
+         ]).strip()
+
+        if combined_text:
+            X = vectorizer.transform([combined_text])
             pred = model.predict(X)[0]
 
             sentiment_map = {
