@@ -124,3 +124,47 @@ This sentiment analyzer uses a TF-IDF + Logistic Regression pipeline, which prov
 - Utilize all textual feedback columns by combining them into a unified input.
 - Explore hybrid models combining text and structured features.
 - Evaluate transformer-based models (e.g., BERT) for deeper semantic understanding.
+
+
+# Experimental Branch: Full-Text Combination
+
+This repository includes an experimental branch that explores improving sentiment prediction by utilizing all available textual feedback fields in the dataset.
+
+Branch Name:
+    feature/full-text-combination
+
+### Motivation
+
+The baseline model was trained using a single high-signal feedback column to establish a clean and interpretable NLP pipeline. However, the dataset contains multiple complementary text fields (e.g., teaching, course content, lab work, extracurricular feedback), which provide additional context about student experience.
+
+To better leverage this information, an experimental branch was created to combine all textual inputs into a unified document for model training and inference.
+
+### What Was Changed
+1. Combined multiple text columns into a single combined_text feature
+
+2. Retained the same sentiment target (teaching) to avoid label ambiguity
+
+3. Reused the same NLP pipeline:
+    TF-IDF vectorization with unigram + bigram features
+    Class-weighted Logistic Regression
+
+4. Updated the Flask inference app to accept multiple feedback inputs and combine them consistently with training
+
+## Outcome
+1. Improved contextual understanding of feedback
+
+2. Better handling of mixed sentiment statements
+
+3. More realistic behavior for negative and neutral feedback cases
+
+The baseline model remains available on the main branch for simplicity and stability, while this branch serves as a documented enhancement and experimentation path.
+
+## Engineering Rationale
+This branching approach reflects real-world ML development practices:
+1. Stable baseline maintained on main
+2. Experimental improvements isolated in feature branches
+3. Trade-offs documented rather than hidden
+
+--------
+
+> This project follows an iterative ML development approach, balancing deployable baselines with documented experimentation using Git branching.
