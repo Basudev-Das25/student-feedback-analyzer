@@ -30,7 +30,9 @@ y = data["sentiment_encoded"]
 vectorizer = TfidfVectorizer(
     lowercase=True,
     stop_words="english",
-    max_features=5000
+    max_features=5000,
+    ngram_range=(1, 2),
+    min_df=2
 )
 
 X = vectorizer.fit_transform(X_text)
