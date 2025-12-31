@@ -37,12 +37,13 @@ def home():
             X = vectorizer.transform([text])
             pred = model.predict(X)[0]
 
-            #if labels are numeric, show numeric class
-            #if label are strings, inverse_transform will return strings.
-            try:
-                label = label_encoder.inverse_transform([pred])[0]
-            except Exception:
-                label = pred
+            sentiment_map = {
+                0: "Neagtive",
+                1: "Neutral",
+                2: "Positive"
+            }
+
+            label = sentiment_map.get(int(pred), "Unkown")
 
             result_text = f"Predicted Sentiment: {label}"
 
